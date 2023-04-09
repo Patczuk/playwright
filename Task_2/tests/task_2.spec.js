@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test('task_2 part_1', async ({ page }) => {
   await page.goto('https://demoqa.com/automation-practice-form/');
-  //await page.pause(); // using for debug
+  await page.pause(); // using for debug
 
   //await page.waitForTimeout(2000);
 
@@ -23,6 +23,7 @@ test('task_2 part_1', async ({ page }) => {
   //expect(await page.getByLabel('Sports').isChecked()).toBeTruthy();
 
   /*const sports = page.locator('#hobbies-checkbox-1'); //sports checkbox
+  await sports.waitFor({ state: 'visible' });
   await sports.check(); //locator.check()
   await expect(male).toBeChecked(); //sports checkbox is marked*/
 
