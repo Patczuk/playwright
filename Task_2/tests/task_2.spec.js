@@ -13,6 +13,7 @@ test('task_2 part_1', async ({ page }) => {
 
   await page.locator('id=lastName').press('P'); // locator.press()
   await expect(page.locator('id=lastName')).toHaveValue('P'); // check the input value 'P'
+
   //await page.locator('id=gender-radio-1').check(); // locator.check()
   //await expect(page.locator('id=gender-radio-1')).toBeChecked(); // verify that radio button is marked
 
@@ -33,7 +34,15 @@ test('task_2 part_2 - hover', async ({ page }) => {
 
 test('task_2 part_3 - setInputFiles', async ({ page }) => {
   await page.goto('https://demoqa.com/upload-download/');
+
   await page.waitForSelector('#uploadFile'); // ожидание появления элемента на странице
   await page.locator('#uploadFile').setInputFiles('Misha.txt'); // locator.setInputFiles()
   await expect(page.locator('#uploadedFilePath')).toBeVisible(); // verify that the file was uploaded
+});
+
+test('task_2 part_4 - drag & drop', async ({ page }) => {
+  await page.goto('https://demoqa.com/droppable/');
+
+  await page.locator('id=draggable').dragTo(page.locator('(//div[@id="droppable"])[1]')); // - drag & drop
+  await expect(page.getByText('Dropped')).toBeVisible(); // verify that the element was dragged
 });
