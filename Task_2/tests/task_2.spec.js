@@ -11,6 +11,8 @@ test('task_2 part_1', async ({ page }) => {
   await page.locator('id=firstName').fill('Misha'); // locator.fill()
   await expect(page.locator('id=firstName')).toHaveValue('Misha'); // check the input value 'Misha'
 
+  await page.locator('id=lastName').press('P'); // locator.press()
+  await expect(page.locator('id=lastName')).toHaveValue('P'); // check the input value 'P'
   //await page.locator('id=gender-radio-1').check(); // locator.check()
   //await expect(page.locator('id=gender-radio-1')).toBeChecked(); // verify that radio button is marked
 
@@ -24,7 +26,6 @@ test('task_2 part_1', async ({ page }) => {
 
 test('task_2 part_2 - hover', async ({ page }) => {
   await page.goto('https://demoqa.com/menu#/');
-  //await page.pause(); // using for debug
 
   await page.locator('xpath=//a[contains(text(),"Main Item 2")]').hover(); // locator.hover()
   await expect(page.locator('(//ul[@id="nav"]//a)[3]')).toBeVisible(); // element is visible
