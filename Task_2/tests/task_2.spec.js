@@ -4,7 +4,7 @@ test('task_2 part_1', async ({ page }) => {
   await page.goto('https://demoqa.com/automation-practice-form/');
   //await page.pause(); // using for debug
 
-  await page.waitForTimeout(2000);
+  //await page.waitForTimeout(2000);
 
   await expect(page).toHaveTitle(/DEMOQA/); // check title
 
@@ -14,20 +14,22 @@ test('task_2 part_1', async ({ page }) => {
   await page.locator('id=lastName').press('P'); // locator.press()
   await expect(page.locator('id=lastName')).toHaveValue('P'); // check the input value 'P'
 
-  const male = await page.locator('id=gender-radio-1'); // Male radio button
+  const male = page.locator('id=gender-radio-1'); // Male radio button
   await male.evaluateHandle((input) => input.click()); // locator.click()
   await expect(male).toBeChecked(); // male radio button is marked
 
-  //await page.waitForSelector('id=gender-radio-1', { state: 'visible' });
-  //await page.locator('id=gender-radio-1').check(); // locator.check()
-  //await expect(page.locator('id=gender-radio-1')).toBeChecked(); // verify that the radio button is marked
+  // Пример с использованием в точности документации PW - не работает
+  //await page.getByLabel('Sports').check();
+  //expect(await page.getByLabel('Sports').isChecked()).toBeTruthy();
 
-  //await page.locator('id=react-select-3-input').click();
-  //await page.locator('xpath=//div[text()="select state"]').click();
-  //await page.locator("//[@class='css-1uccc91-singleValue']").selectOption('Haryana'); // locator.selectOption()
+  /*const sports = page.locator('#hobbies-checkbox-1'); //sports checkbox
+  await sports.check(); //locator.check()
+  await expect(male).toBeChecked(); //sports checkbox is marked*/
 
-  //await page.locator('id=hobbies-checkbox-1').check(); //locator.click()
-  //await expect(page.locator('id=hobbies-checkbox-1')).toBeChecked(); // // verify that radio button is marked
+  await page.click('//div[text()="Select State"]');
+  await page.locator('//div[@class="css-11unzgr"]').focus();
+  await page.locator('#css-11unzgr').selectOption({ value: 'NCR' }); // locator.selectOption()
+  await expect(page.locator('#css-1uccc91-singleValue')).toHaveValue('NCR');
 });
 
 test('task_2 part_2 - hover', async ({ page }) => {
