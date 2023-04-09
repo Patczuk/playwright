@@ -21,3 +21,18 @@ test('task_2 part_1', async ({ page }) => {
   //await page.locator('id=hobbies-checkbox-1').check(); //locator.click()
   //await expect(page.locator('id=hobbies-checkbox-1')).toBeChecked(); // // verify that radio button is marked
 });
+
+test('task_2 part_2 - hover', async ({ page }) => {
+  await page.goto('https://demoqa.com/menu#/');
+  //await page.pause(); // using for debug
+
+  await page.locator('xpath=//a[contains(text(),"Main Item 2")]').hover(); // locator.hover()
+  await expect(page.locator('(//ul[@id="nav"]//a)[3]')).toBeVisible(); // element is visible
+});
+
+test('task_2 part_3 - setInputFiles', async ({ page }) => {
+  await page.goto('https://demoqa.com/upload-download/');
+  await page.waitForSelector('#uploadFile'); // ожидание появления элемента на странице
+  await page.locator('#uploadFile').setInputFiles('Misha.txt'); // locator.setInputFiles()
+  await expect(page.locator('#uploadedFilePath')).toBeVisible(); // verify that the file was uploaded
+});
