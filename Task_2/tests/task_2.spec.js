@@ -14,8 +14,13 @@ test('task_2 part_1', async ({ page }) => {
   await page.locator('id=lastName').press('P'); // locator.press()
   await expect(page.locator('id=lastName')).toHaveValue('P'); // check the input value 'P'
 
+  const male = await page.locator('id=gender-radio-1'); // Male radio button
+  await male.evaluateHandle((input) => input.click()); // locator.click()
+  await expect(male).toBeChecked(); // male radio button is marked
+
+  //await page.waitForSelector('id=gender-radio-1', { state: 'visible' });
   //await page.locator('id=gender-radio-1').check(); // locator.check()
-  //await expect(page.locator('id=gender-radio-1')).toBeChecked(); // verify that radio button is marked
+  //await expect(page.locator('id=gender-radio-1')).toBeChecked(); // verify that the radio button is marked
 
   //await page.locator('id=react-select-3-input').click();
   //await page.locator('xpath=//div[text()="select state"]').click();
