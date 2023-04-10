@@ -23,8 +23,8 @@ test('task_2 part_1', async ({ page }) => {
 
   //locator.check()
   // Пример с использованием в точности документации PW - не работает
-  //await page.getByLabel('Sports').check();
-  //expect(await page.getByLabel('Sports').isChecked()).toBeTruthy();
+  await page.getByLabel('Sports').check();
+  expect(await page.getByLabel('Sports').isChecked()).toBeTruthy();
 
   /*const sports = page.locator('#hobbies-checkbox-1'); //sports checkbox
   await sports.waitFor({ state: 'visible' });
