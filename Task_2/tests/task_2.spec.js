@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test('task_2 part_1', async ({ page }) => {
   await page.goto('https://demoqa.com/automation-practice-form/');
-  //await page.pause(); // using for debug
+  await page.pause(); // using for debug
 
   //await page.waitForTimeout(2000);
 
@@ -22,14 +22,13 @@ test('task_2 part_1', async ({ page }) => {
   await expect(male).toBeChecked(); // male radio button is marked
 
   //locator.check()
-  // Пример с использованием в точности документации PW - не работает
-  await page.getByLabel('Sports').check();
-  expect(await page.getByLabel('Sports').isChecked()).toBeTruthy();
+  //Пример с использованием в точности документации PW - не работает
+  // await page.getByLabel('Sports').check();
+  // expect(await page.getByLabel('Sports').isChecked()).toBeTruthy();
 
-  /*const sports = page.locator('#hobbies-checkbox-1'); //sports checkbox
-  await sports.waitFor({ state: 'visible' });
-  await sports.check(); //locator.check()
-  await expect(male).toBeChecked(); //sports checkbox is marked*/
+  const sports = await page.locator('#hobbies-checkbox-1'); //sports checkbox
+  await sports.evaluateHandle((input) => input.click()); //locator.check()
+  await expect(sports).toBeChecked(); //sports checkbox is marked
 
   // locator.selectOption
   await page.click('#dateOfBirthInput');
