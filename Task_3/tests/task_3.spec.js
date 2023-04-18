@@ -1,19 +1,10 @@
-// @ts-check
 const { test, expect } = require('@playwright/test');
+const credentials = require('./config/credentials.json');
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test('Login', async ({ page }) => {
+  await page.goto('https://demoqa.com/login/');
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
-
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects the URL to contain intro.
-  await expect(page).toHaveURL(/.*intro/);
+  await page.fill('#userName', credentials.username);
+  await page.fill('#password', credentials.password);
+  await page.click('#login');
 });
