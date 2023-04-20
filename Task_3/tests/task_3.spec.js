@@ -3,7 +3,7 @@ import { login } from '../Config/credentials.json';
 
 test('Login', async ({ page }) => {
   await page.goto('https://demoqa.com/login/');
-  //await page.pause(); // using for debug
+  // await page.pause(); // using for debug
 
   //Login
   await page.fill('#userName', login.username);
@@ -39,4 +39,21 @@ test('Login', async ({ page }) => {
   //проверка token
   const token = cookies.find((c) => c.name == 'token');
   await expect(token).toBeTruthy(); // Проверяем, что значение не является пустым или не определенным
+
+  //Блокировка загрузки изображений
+  await page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) => route.abort());
+  await page.goto('https://demoqa.com/books/');
+  // await page.waitForLoadState();
+  await page.waitForSelector(
+    'img[src$=".jpg"], img[src$=".jpeg"], img[src$=".png"], img[src$=".gif"], img[src$=".webp"], img[src$=".svg"]'
+  );
+
+  const images = await page.$$(
+    'img[src$=".jpg"], img[src$=".jpeg"], img[src$=".png"], img[src$=".gif"], img[src$=".webp"], img[src$=".svg"]'
+  );
+  if (images.length === 0) {
+    console.log('На странице нет изображений');
+  } else {
+    console.log(`Найдено ${images.length} изображений на странице`);
+  }
 });
