@@ -6,26 +6,37 @@ test('Login', async ({ page }) => {
   //await page.pause(); // using for debug
 
   //Login
-  // await page.fill('#userName', 'Misha');
-  // await page.fill('#password', 'Misha1test!');
   await page.fill('#userName', login.username);
   await page.fill('#password', login.password);
   await page.click('#login');
+  await page.waitForNavigation();
 
   await expect(page).toHaveTitle(/DEMOQA/); // check title
 
-  //checking cookies
-  const cookies = await page.cookies(); // get all cookies
+  //получаем cookies
+  const cookies = await page.context().cookies(); // get all cookies
+  expect(cookies.length).toBeGreaterThan(0);
 
-  await expect(cookies.userName.value).toBeDefined(); // проверяем, что значение определено
-  await expect(cookies.userName).toBeTruthy(); // Проверяем, что значение не является пустым
+  //вывожу в консоль полученные куки (была проблема, что не все получал)
+  for (const cookie of cookies) {
+    console.log(cookie);
+  }
 
-  await expect(cookies.userID).toBeDefined(); // проверяем, что значение определено
-  await expect(cookies.userID).toBeTruthy(); // Проверяем, что значение не является пустым
+  //проверка userID
+  const userID = cookies.find((c) => c.name == 'userID');
+  await expect(userID).toBeTruthy(); // Проверяем, что значение не является пустым или не определенным
+  await expect(userID.value).toBe('98137e29-ddb8-420d-bdcb-d4fe9ec6b5ce');
 
-  await expect(cookies.expires).toBeDefined(); // проверяем, что значение определено
-  await expect(cookies.expires).toBeTruthy(); // Проверяем, что значение не является пустым
+  //проверка userName
+  const userName = cookies.find((c) => c.name == 'userName');
+  await expect(userName).toBeTruthy(); // Проверяем, что значение не является пустым или не определенным
+  await expect(userName.value).toBe('Misha');
 
-  await expect(cookies.token).toBeDefined(); // проверяем, что значение определено
-  await expect(cookies.token).toBeTruthy(); // Проверяем, что значение не является пустым
+  //проверка expires
+  const expires = cookies.find((c) => c.name == 'expires');
+  await expect(expires).toBeTruthy(); // Проверяем, что значение не является пустым или не определенным
+
+  //проверка token
+  const token = cookies.find((c) => c.name == 'token');
+  await expect(token).toBeTruthy(); // Проверяем, что значение не является пустым или не определенным
 });
