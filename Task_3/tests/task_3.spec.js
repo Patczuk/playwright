@@ -3,7 +3,7 @@ import { login } from '../Config/credentials.json';
 
 test('Login', async ({ page }) => {
   await page.goto('https://demoqa.com/login/');
-  // await page.pause(); // using for debug
+  await page.pause(); // using for debug
 
   //Login
   await page.fill('#userName', login.username);
@@ -17,10 +17,10 @@ test('Login', async ({ page }) => {
   const cookies = await page.context().cookies(); // get all cookies
   expect(cookies.length).toBeGreaterThan(0);
 
-  //вывожу в консоль полученные куки (была проблема, что не все получал)
-  for (const cookie of cookies) {
-    console.log(cookie);
-  }
+  //вывод в консоль полученные куки (была проблема, что не все получал)
+  // for (const cookie of cookies) {
+  //   console.log(cookie);
+  // }
 
   //проверка userID
   const userID = cookies.find((c) => c.name == 'userID');
@@ -62,5 +62,31 @@ test('Login', async ({ page }) => {
   const responseBody = await response.json(); // парсим ответ в JSON
   await expect(responseBody.books).toHaveLength(8);
 
-  // console.log(books);
+  //через page.route модифицировать ответ от GET
+  let cheatPages; // переменная в которую будем сохранять случайное число страниц
+  await page.route('https://demoqa.com/BookStore/v1/Book?ISBN=*', async (route) => {
+    const response = await route.fetch();
+    let body = await response.text();
+    const bookBody = JSON.parse(body);
+    cheatPages = Math.floor(Math.random() * 1000) + 1; //генерируем случайное число страниц
+    body = body.replace(bookBody.pages, cheatPages); //подменяем кол-во страниц на случайное число
+
+    route.fulfill({
+      response,
+      body,
+      headers: {
+        ...response.headers(),
+      },
+    });
+  });
+
+  // Кликнуть на любую книгу в списке
+  await page.waitForLoadState();
+  await page.locator("//a[contains(text(),'Speaking JavaScript')]").click();
+
+  //убедиться, что на UI отображается именно то число, которое указано ранее
+  const pagesCount = parseInt(await page.innerText("//div[@id='pages-wrapper']//label[@id='userName-value']")); // значение количества страниц, видимых через UI
+
+  //проверяем, что случайное число страниц видимо на странице
+  await expect(pagesCount).toBe(cheatPages);
 });
