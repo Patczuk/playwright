@@ -42,18 +42,25 @@ test('Login', async ({ page }) => {
 
   //Блокировка загрузки изображений
   await page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) => route.abort());
-  await page.goto('https://demoqa.com/books/');
-  // await page.waitForLoadState();
-  await page.waitForSelector(
-    'img[src$=".jpg"], img[src$=".jpeg"], img[src$=".png"], img[src$=".gif"], img[src$=".webp"], img[src$=".svg"]'
-  );
 
-  const images = await page.$$(
-    'img[src$=".jpg"], img[src$=".jpeg"], img[src$=".png"], img[src$=".gif"], img[src$=".webp"], img[src$=".svg"]'
-  );
-  if (images.length === 0) {
-    console.log('На странице нет изображений');
-  } else {
-    console.log(`Найдено ${images.length} изображений на странице`);
-  }
+  // через page.waitForResponse создать ожидание для перехвата GET запроса
+  const [response] = await Promise.all([
+    page.waitForResponse(
+      (resp) => resp.url().includes('https://demoqa.com/BookStore/v1/Books') && resp.request().method() === 'GET'
+    ),
+    page.locator('//span[text()="Book Store"]').click(), //в меню слева кликнуть Book Store
+  ]);
+
+  //дождаться загрузки, сделать скриншот страницы и сохранить
+  await page.waitForLoadState();
+  await page.screenshot({ path: __dirname + '\\screenshots\\bookstore.png' });
+
+  //проверить перехваченный GET запроc
+  await expect(response.status()).toBe(200); //status = 200
+
+  //количество books в body = количеству books через UI
+  const responseBody = await response.json(); // парсим ответ в JSON
+  await expect(responseBody.books).toHaveLength(8);
+
+  // console.log(books);
 });
