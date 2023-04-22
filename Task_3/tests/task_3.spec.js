@@ -1,9 +1,10 @@
 const { test, expect } = require('@playwright/test');
 import { login } from '../Config/credentials.json';
+const request = require('request');
 
-test('Login', async ({ page }) => {
+test('Login', async ({ page, request }) => {
   await page.goto('https://demoqa.com/login/');
-  await page.pause(); // using for debug
+  // await page.pause();
 
   //Login
   await page.fill('#userName', login.username);
@@ -17,7 +18,7 @@ test('Login', async ({ page }) => {
   const cookies = await page.context().cookies(); // get all cookies
   expect(cookies.length).toBeGreaterThan(0);
 
-  //вывод в консоль полученные куки (была проблема, что не все получал)
+  //вывод в консоль полученных куки
   // for (const cookie of cookies) {
   //   console.log(cookie);
   // }
@@ -90,4 +91,17 @@ test('Login', async ({ page }) => {
 
   //проверяем, что случайное число страниц на UI равно случайно заданному числу страниц
   await expect(pagesCount).toEqual(cheatPages);
+
+  //выполнить API запрос (await request.get(…))
+  const getUserInfo = await request.get(`https://demoqa.com/Account/v1/User/${userID.value}`, {
+    headers: {
+      Authorization: `Bearer ${token.value}`,
+    },
+  });
+
+  const infoBody = JSON.parse(await getUserInfo.text()); // парсим тело ответа и сохраняем в переменную
+
+  await expect(infoBody.username).toBe('Misha'); // проверяем имя в ответе
+  await expect(infoBody.books).toHaveLength(0); // проверяем массив книг в ответе
+  console.log(infoBody);
 });
