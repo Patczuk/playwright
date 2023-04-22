@@ -68,7 +68,7 @@ test('Login', async ({ page }) => {
     const response = await route.fetch();
     let body = await response.text();
     const bookBody = JSON.parse(body);
-    cheatPages = Math.floor(Math.random() * 1000) + 1; //генерируем случайное число страниц
+    cheatPages = Math.floor(Math.random() * 999) + 1; //генерируем случайное число страниц
     body = body.replace(bookBody.pages, cheatPages); //подменяем кол-во страниц на случайное число
 
     route.fulfill({
@@ -81,12 +81,13 @@ test('Login', async ({ page }) => {
   });
 
   // Кликнуть на любую книгу в списке
-  await page.waitForLoadState();
-  await page.locator("//a[contains(text(),'Speaking JavaScript')]").click();
+  const books = await page.$$('.action-buttons'); // получаем все книги со страницы
+  const randomIndex = Math.floor(Math.random() * (books.length - 1)); // генерируем рандомное число в рамках количества книг на странице
+  await books[randomIndex].click(); //кликаем по рандомной книге
 
-  //убедиться, что на UI отображается именно то число, которое указано ранее
+  //убедиться, что на UI отображается именно то число страниц, которое указано ранее
   const pagesCount = parseInt(await page.innerText("//div[@id='pages-wrapper']//label[@id='userName-value']")); // значение количества страниц, видимых через UI
 
-  //проверяем, что случайное число страниц видимо на странице
-  await expect(pagesCount).toBe(cheatPages);
+  //проверяем, что случайное число страниц на UI равно случайно заданному числу страниц
+  await expect(pagesCount).toEqual(cheatPages);
 });
