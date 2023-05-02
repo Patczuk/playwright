@@ -10,9 +10,9 @@ test('Login', async ({ page, request }) => {
   await page.fill('#userName', login.username);
   await page.fill('#password', login.password);
   await page.click('#login');
-  await page.waitForTimeout(5000);
+  await page.waitForSelector('#submit'); // ждем logout btn
 
-  await expect(page).toHaveTitle(/DEMOQA/); // check title
+  // await page.locator('#submit').toBeVisible(); // logout btn
 
   //получаем cookies
   const cookies = await page.context().cookies(); // get all cookies
