@@ -10,7 +10,7 @@ test('Login', async ({ page, request }) => {
   await page.fill('#userName', login.username);
   await page.fill('#password', login.password);
   await page.click('#login');
-  await page.waitForNavigation();
+  await page.waitForTimeout(5000);
 
   await expect(page).toHaveTitle(/DEMOQA/); // check title
 
@@ -64,12 +64,13 @@ test('Login', async ({ page, request }) => {
   await expect(responseBody.books).toHaveLength(8);
 
   //через page.route модифицировать ответ от GET
-  let cheatPages; // переменная в которую будем сохранять случайное число страниц
+  let cheatPages = (Math.floor(Math.random() * 999) + 1).toString(); //переменная в которую будем сохранять случайное число страниц
+
   await page.route('https://demoqa.com/BookStore/v1/Book?ISBN=*', async (route) => {
     const response = await route.fetch();
     let body = await response.text();
     const bookBody = JSON.parse(body);
-    cheatPages = Math.floor(Math.random() * 999) + 1; //генерируем случайное число страниц
+
     body = body.replace(bookBody.pages, cheatPages); //подменяем кол-во страниц на случайное число
 
     route.fulfill({
@@ -87,10 +88,10 @@ test('Login', async ({ page, request }) => {
   await books[randomIndex].click(); //кликаем по рандомной книге
 
   //убедиться, что на UI отображается именно то число страниц, которое указано ранее
-  const pagesCount = parseInt(await page.innerText("//div[@id='pages-wrapper']//label[@id='userName-value']")); // значение количества страниц, видимых через UI
+  const pagesCount = await page.locator("//div[@id='pages-wrapper']//label[@id='userName-value']"); // значение количества страниц, видимых через UI
 
   //проверяем, что случайное число страниц на UI равно случайно заданному числу страниц
-  await expect(pagesCount).toEqual(cheatPages);
+  await expect(pagesCount).toHaveText(cheatPages);
 
   //выполнить API запрос (await request.get(…))
   const getUserInfo = await request.get(`https://demoqa.com/Account/v1/User/${userID.value}`, {
