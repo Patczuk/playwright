@@ -1,8 +1,19 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, chromium } from '@playwright/test'
 import { login } from '../Config/credentials.json'
 import axios from 'axios'
 
-test('Login', async ({ page }) => {
+test('Task_4', async ({ page }) => {
+  const browser = await chromium.launch({
+    logger: {
+      isEnabled: () => true,
+      log: (name, severity, message, args) =>
+        console.log(`${name} ${severity} ${message} ${args}`),
+    },
+  })
+
+  const context = await browser.newContext()
+  page = await context.newPage()
+
   await test.step('Log in', async () => {
     await page.goto('https://demoqa.com/login/')
     await page.fill('#userName', login.username)
