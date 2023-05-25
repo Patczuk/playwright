@@ -1,6 +1,9 @@
 import { test, expect, chromium } from '@playwright/test'
 import { login } from '../Config/credentials.json'
 import axios from 'axios'
+import { config } from '../playwright.config'
+
+test.use(config)
 
 test('Task_4', async ({ page }) => {
   const browser = await chromium.launch({
