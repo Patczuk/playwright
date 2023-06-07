@@ -1,13 +1,12 @@
 import { test, expect } from '@playwright/test'
 import { login } from '../Config/credentials.json'
 import axios from 'axios'
+import { loginPage } from '../PageObject/loginPage';
 
 test('Task_5', async ({ page }) => {
   await test.step('Log in', async () => {
-    await page.goto('https://demoqa.com/login/')
-    await page.fill('#userName', login.username)
-    await page.fill('#password', login.password)
-    await page.click('#login')
+    const loginP = new loginPage(page)
+    await loginP.login(login.username, login.password)
     await page.waitForSelector('#submit') // ждем logout btn
   })
 
