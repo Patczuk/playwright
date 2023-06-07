@@ -1,20 +1,23 @@
 import { test, expect } from '@playwright/test'
 import { login } from '../Config/credentials.json'
 import axios from 'axios'
-import { loginPage } from '../PageObject/loginPage';
+import { loginPage } from '../PageObject/loginPage'
+import { profilePage } from '../PageObject/profilePage'
 
 test('Task_5', async ({ page }) => {
   await test.step('Log in', async () => {
     const loginP = new loginPage(page)
+    const profileP = new profilePage(page)
     await loginP.login(login.username, login.password)
-    await page.waitForSelector('#submit') // ждем logout btn
+    await profileP.waitForLogoutBtn() // ждем logout btn
   })
 
   let userID
   let token
 
   await test.step('Cookies', async () => {
-    const cookies = await page.context().cookies() // get all cookies
+    const profileP = new profilePage(page)
+    const cookies = await profileP.getCookies() // get all cookies
     expect(cookies.length).toBeGreaterThan(0)
 
     //проверка userID
