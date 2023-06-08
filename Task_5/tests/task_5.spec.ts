@@ -3,6 +3,7 @@ import { login } from '../Config/credentials.json'
 import axios from 'axios'
 import { loginPage } from '../PageObject/loginPage'
 import { profilePage } from '../PageObject/profilePage'
+import { bookStorePage } from '../PageObject/bookStorePage'
 
 test('Task_5', async ({ page }) => {
   await test.step('Log in', async () => {
@@ -45,16 +46,11 @@ test('Task_5', async ({ page }) => {
   })
 
   let response
+  const bookstoreP = new bookStorePage(page)
 
   await test.step('Создание ожидания для перехвата GET запроса', async () => {
-    ;[response] = await Promise.all([
-      page.waitForResponse(
-        (resp) =>
-          resp.url().includes('https://demoqa.com/BookStore/v1/Books') &&
-          resp.request().method() === 'GET'
-      ),
-      page.locator('//span[text()="Book Store"]').click(), //в меню слева кликнуть Book Store
-    ])
+    [response] = await bookstoreP.blockImages()
+      
   })
 
   await test.step('Делаем скриншот страницы', async () => {
