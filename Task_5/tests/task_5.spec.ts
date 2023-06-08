@@ -55,7 +55,7 @@ test('Task_5', async ({ page }) => {
 
   await test.step('Делаем скриншот страницы', async () => {
     await page.waitForLoadState()
-    await page.screenshot({ path: __dirname + '\\screenshots\\bookstore.png' })
+    bookstoreP.takeScreenshot()
   })
 
   let responseBody

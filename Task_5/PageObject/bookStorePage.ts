@@ -1,4 +1,5 @@
 import { Locator, Page } from '@playwright/test';
+import path from 'path';
 
 export class bookStorePage {
   readonly page: Page
@@ -26,7 +27,7 @@ export class bookStorePage {
    }
    
    async takeScreenshot() {
-    await this.page.screenshot({ path: __dirname + '..\\screenshots\\bookstore.png' })
+    await this.page.screenshot({ path: path.join(__dirname, '..', 'screenshots', 'bookstore.png') })
    }
       
  }
