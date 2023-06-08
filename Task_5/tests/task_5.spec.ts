@@ -40,9 +40,8 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Block image loading', async () => {
-    await page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) =>
-      route.abort()
-    )
+    const profileP = new profilePage(page)
+    profileP.blockImages()
   })
 
   let response
