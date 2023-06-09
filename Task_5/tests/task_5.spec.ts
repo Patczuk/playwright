@@ -71,7 +71,7 @@ test('Task_5', async ({ page }) => {
   let cheatPages //переменная в которую будем сохранять случайное число страниц
 
   await test.step('Модификация ответа', async () => {
-    cheatPages = (Math.floor(Math.random() * 999) + 1).toString()
+    cheatPages = bookstoreP.cheatPages
 
     await page.route(
       'https://demoqa.com/BookStore/v1/Book?ISBN=*',
@@ -87,7 +87,7 @@ test('Task_5', async ({ page }) => {
           body,
           headers: {
             ...response.headers(),
-          },
+          }
         })
       }
     )

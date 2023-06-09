@@ -6,12 +6,14 @@ export class bookStorePage {
   readonly bookStoreBtn: Locator
   response: any[]
   bookStoreUrl: string
+  cheatPages: string
  
   constructor(page: Page) {
     this.page = page;
     this.bookStoreBtn = page.locator('//span[text()="Book Store"]');
     this.response = []
     this.bookStoreUrl = 'https://demoqa.com/BookStore/v1/Books'
+    this.cheatPages = (Math.floor(Math.random() * 999) + 1).toString()
     }
 
    async blockImages() {
@@ -29,5 +31,5 @@ export class bookStorePage {
    async takeScreenshot() {
     await this.page.screenshot({ path: path.join(__dirname, '..', 'screenshots', 'bookstore.png') })
    }
-      
+    
  }
