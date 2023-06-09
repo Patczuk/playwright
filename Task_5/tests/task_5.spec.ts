@@ -75,9 +75,7 @@ test('Task_5', async ({ page }) => {
 
   await test.step('Проверки ответов', async () => {
     //убедиться, что на UI отображается именно то число страниц, которое указано ранее
-    const pagesCount = page.locator(
-      "//div[@id='pages-wrapper']//label[@id='userName-value']"
-    ) // значение количества страниц, видимых через UI
+    const pagesCount = bookstoreP.pagesCount // значение количества страниц, видимых через UI
 
     //проверяем, что случайное число страниц на UI равно случайно заданному числу страниц
     await expect(pagesCount).toHaveText(cheatPages)

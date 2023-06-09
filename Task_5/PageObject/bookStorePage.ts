@@ -4,6 +4,7 @@ import path from 'path';
 export class bookStorePage {
   readonly page: Page
   readonly bookStoreBtn: Locator
+  readonly pagesCount: Locator
   response: any[]
   books: any[]
   bookStoreUrl: string
@@ -20,7 +21,8 @@ export class bookStorePage {
     this.pageRouteUrl = 'https://demoqa.com/BookStore/v1/Book?ISBN=*'
     this.cheatPages = (Math.floor(Math.random() * 999) + 1).toString()
     this.books = []
-
+    this.pagesCount = page.locator(
+      "//div[@id='pages-wrapper']//label[@id='userName-value']")
     }
 
    async blockImages() {
