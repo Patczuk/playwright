@@ -6,18 +6,21 @@ import { profilePage } from '../PageObject/profilePage'
 import { bookStorePage } from '../PageObject/bookStorePage'
 
 test('Task_5', async ({ page }) => {
+  const loginP = new loginPage(page)
+  const profileP = new profilePage(page)
+  const bookstoreP = new bookStorePage(page)
+  let response
+  let userID
+  let token
+  let responseBody
+  let cheatPages //переменная в которую будем сохранять случайное число страниц
+  
   await test.step('Log in', async () => {
-    const loginP = new loginPage(page)
-    const profileP = new profilePage(page)
     await loginP.login(login.username, login.password)
     await profileP.waitForLogoutBtn() // ждем logout btn
   })
 
-  let userID
-  let token
-
   await test.step('Cookies', async () => {
-    const profileP = new profilePage(page)
     const cookies = await profileP.getCookies() // get all cookies
     expect(cookies.length).toBeGreaterThan(0)
 
@@ -41,24 +44,17 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Block image loading', async () => {
-    const profileP = new profilePage(page)
     profileP.blockImages()
   })
 
-  let response
-  const bookstoreP = new bookStorePage(page)
-
   await test.step('Создание ожидания для перехвата GET запроса', async () => {
     [response] = await bookstoreP.blockImages()
-      
   })
 
   await test.step('Делаем скриншот страницы', async () => {
     await page.waitForLoadState()
     bookstoreP.takeScreenshot()
   })
-
-  let responseBody
 
   await test.step('Проверка запросов', async () => {
     expect(response.status()).toBe(200) //status = 200
@@ -68,35 +64,13 @@ test('Task_5', async ({ page }) => {
     expect(responseBody.books).toHaveLength(8)
   })
 
-  let cheatPages //переменная в которую будем сохранять случайное число страниц
-
   await test.step('Модификация ответа', async () => {
     cheatPages = bookstoreP.cheatPages
-
-    await page.route(
-      'https://demoqa.com/BookStore/v1/Book?ISBN=*',
-      async (route) => {
-        const response = await route.fetch()
-        let body = await response.text()
-        const bookBody = JSON.parse(body)
-
-        body = body.replace(bookBody.pages, cheatPages) //подменяем кол-во страниц на случайное число
-
-        route.fulfill({
-          response,
-          body,
-          headers: {
-            ...response.headers(),
-          }
-        })
-      }
-    )
+    bookstoreP.pageRoute()
   })
 
   await test.step('Кликаем по рандомной книге', async () => {
-    const books = await page.$$('.action-buttons') // получаем все книги со страницы
-    const randomIndex = Math.floor(Math.random() * (books.length - 1)) // генерируем рандомное число в рамках количества книг на странице
-    await books[randomIndex].click() //кликаем по рандомной книге
+    bookstoreP.randomBookClick() //кликаем по рандомной книге
   })
 
   await test.step('Проверки ответов', async () => {
