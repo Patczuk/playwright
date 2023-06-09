@@ -1,5 +1,5 @@
-import { Locator, Page } from '@playwright/test';
-import path from 'path';
+import { Locator, Page } from '@playwright/test'
+import path from 'path'
 
 export class bookStorePage {
   readonly page: Page
@@ -66,8 +66,5 @@ export class bookStorePage {
     this.books = await this.page.$$('.action-buttons') // получаем все книги со страницы
     this.randomIndex = Math.floor(Math.random() * (this.books.length - 1))
     await this.books[this.randomIndex].click()
-   }     
-
-    
-
+   }       
  }

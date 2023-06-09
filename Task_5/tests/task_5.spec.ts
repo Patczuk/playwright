@@ -25,21 +25,21 @@ test('Task_5', async ({ page }) => {
     expect(cookies.length).toBeGreaterThan(0)
 
     //проверка userID
-    userID = cookies.find((c) => c.name === 'userID')
+    userID = await profileP.getUserID()
     expect(userID).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
     expect(userID.value).toBe('98137e29-ddb8-420d-bdcb-d4fe9ec6b5ce')
 
     //проверка userName
-    const userName = cookies.find((c) => c.name === 'userName')
+    const userName = await profileP.getUserName()
     expect(userName).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
-    expect(userName?.value).toBe('Misha')
+    expect(userName).toBe('Misha')
 
     //проверка expires
-    const expires = cookies.find((c) => c.name === 'expires')
+    const expires = await profileP.getExpires()
     expect(expires).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
 
     //проверка token
-    token = cookies.find((c) => c.name === 'token')
+    token = await profileP.getToken()
     expect(token).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
   })
 
