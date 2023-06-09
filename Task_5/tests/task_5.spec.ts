@@ -85,8 +85,8 @@ test('Task_5', async ({ page }) => {
       `https://demoqa.com/Account/v1/User/${userID.value}`,
       {
         headers: {
-          Authorization: `Bearer ${token.value}`,
-        },
+          Authorization: `Bearer ${token}`
+        }
       }
     )
 

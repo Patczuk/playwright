@@ -1,5 +1,4 @@
 import { Locator, Page } from '@playwright/test'
-import axios from 'axios'
 
 export class profilePage {
   readonly page: Page
@@ -14,9 +13,7 @@ export class profilePage {
     this.page = page;
     this.logoutBtn = page.locator('#submit');
     this.cookies = []
-    this.token = this.cookies.find((c) => c.name === 'token')
-    this.userID = this.cookies.find((c) => c.name === 'userID')
-    }
+   }
 
    async waitForLogoutBtn() {
     await this.page.waitForSelector('#submit')
@@ -50,25 +47,7 @@ export class profilePage {
     return this.token
    }
   
-   async getUsersInfo() {
-    try {
-      const response = await axios.get(
-        `https://demoqa.com/Account/v1/User/${this.userID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-          },
-        }
-      );
-  
-      return response.data; // Return the response data
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }
-
-   async blockImages() {
+    async blockImages() {
     this.page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) =>
       route.abort()
     )
