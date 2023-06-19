@@ -1,8 +1,7 @@
 import { Locator, Page } from '@playwright/test'
 
-export class profilePage {
+export class ProfilePage {
   readonly page: Page
-  readonly logoutBtn: Locator
   cookies: any[]
   userID: string
   token: string
@@ -11,7 +10,6 @@ export class profilePage {
    
   constructor(page: Page) {
     this.page = page;
-    this.logoutBtn = page.locator('#submit');
     this.cookies = []
    }
 

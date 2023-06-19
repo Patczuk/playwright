@@ -1,14 +1,18 @@
 import { test, expect } from '@playwright/test'
-import { login } from '../Config/credentials.json'
+import { login } from '../config/credentials.json'
 import axios from 'axios'
-import { loginPage } from '../PageObject/loginPage'
-import { profilePage } from '../PageObject/profilePage'
-import { bookStorePage } from '../PageObject/bookStorePage'
+import { LoginPage } from '../pages/loginPage'
+import { ProfilePage } from '../pages/profilePage'
+import { BookStorePage } from '../pages/bookStorePage'
+import {SupportUtil} from '../utils/supportUtil'
+import {RouteUtil} from '../utils/routeUtil'
 
 test('Task_5', async ({ page }) => {
-  const loginP = new loginPage(page)
-  const profileP = new profilePage(page)
-  const bookstoreP = new bookStorePage(page)
+  const loginPage = new LoginPage(page)
+  const profilePage = new ProfilePage(page)
+  const bookstorePage = new BookStorePage(page)
+  const supportUtil = new SupportUtil(page)
+  const routeUtil = new RouteUtil(page)
   let response
   let userID
   let token
@@ -16,44 +20,45 @@ test('Task_5', async ({ page }) => {
   let cheatPages //переменная в которую будем сохранять случайное число страниц
   
   await test.step('Log in', async () => {
-    await loginP.login(login.username, login.password)
-    await profileP.waitForLogoutBtn() // ждем logout btn
+    await loginPage.goTo()
+    await loginPage.login(login.username, login.password)
+    await profilePage.waitForLogoutBtn() // ждем logout btn
   })
 
   await test.step('Cookies', async () => {
-    const cookies = await profileP.getCookies() // get all cookies
+    const cookies = await profilePage.getCookies() // get all cookies
     expect(cookies.length).toBeGreaterThan(0)
 
     //проверка userID
-    userID = await profileP.getUserID()
+    userID = await profilePage.getUserID()
     expect(userID).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
     expect(userID.value).toBe('98137e29-ddb8-420d-bdcb-d4fe9ec6b5ce')
 
     //проверка userName
-    const userName = await profileP.getUserName()
+    const userName = await profilePage.getUserName()
     expect(userName).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
     expect(userName).toBe('Misha')
 
     //проверка expires
-    const expires = await profileP.getExpires()
+    const expires = await profilePage.getExpires()
     expect(expires).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
 
     //проверка token
-    token = await profileP.getToken()
+    token = await profilePage.getToken()
     expect(token).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
   })
 
   await test.step('Block image loading', async () => {
-    profileP.blockImages()
+    profilePage.blockImages()
   })
 
   await test.step('Создание ожидания для перехвата GET запроса', async () => {
-    [response] = await bookstoreP.blockImages()
+    [response] = await routeUtil.blockImages()
   })
 
   await test.step('Делаем скриншот страницы', async () => {
     await page.waitForLoadState()
-    bookstoreP.takeScreenshot()
+    await supportUtil.takeScreenshot()
   })
 
   await test.step('Проверка запросов', async () => {
@@ -65,17 +70,17 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Модификация ответа', async () => {
-    cheatPages = bookstoreP.cheatPages
-    bookstoreP.pageRoute()
+    cheatPages = supportUtil.cheatPages
+    routeUtil.pageRoute()
   })
 
   await test.step('Кликаем по рандомной книге', async () => {
-    bookstoreP.randomBookClick() //кликаем по рандомной книге
+   await bookstorePage.randomBookClick() //кликаем по рандомной книге
   })
 
   await test.step('Проверки ответов', async () => {
     //убедиться, что на UI отображается именно то число страниц, которое указано ранее
-    const pagesCount = bookstoreP.pagesCount // значение количества страниц, видимых через UI
+    const pagesCount = bookstorePage.pagesCount // значение количества страниц, видимых через UI
 
     //проверяем, что случайное число страниц на UI равно случайно заданному числу страниц
     await expect(pagesCount).toHaveText(cheatPages)
