@@ -6,6 +6,7 @@ import { ProfilePage } from '../pages/profilePage'
 import { BookStorePage } from '../pages/bookStorePage'
 import {SupportUtil} from '../utils/supportUtil'
 import {RouteUtil} from '../utils/routeUtil'
+import {CookiesUtil} from '../utils/cookiesUtil'
 
 test('Task_5', async ({ page }) => {
   const loginPage = new LoginPage(page)
@@ -13,8 +14,10 @@ test('Task_5', async ({ page }) => {
   const bookstorePage = new BookStorePage(page)
   const supportUtil = new SupportUtil(page)
   const routeUtil = new RouteUtil(page)
+  const cookiesUtil = new CookiesUtil(page)
   let response
   let userID
+  let userName
   let token
   let responseBody
   let cheatPages //переменная в которую будем сохранять случайное число страниц
@@ -26,25 +29,25 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Cookies', async () => {
-    const cookies = await profilePage.getCookies() // get all cookies
-    expect(cookies.length).toBeGreaterThan(0)
+    // const cookies = await profilePage.getCookies() // get all cookies
+    // expect(cookies.length).toBeGreaterThan(0)
 
     //проверка userID
-    userID = await profilePage.getUserID()
+    userID = await cookiesUtil.getCookieValue('userID')
     expect(userID).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
-    expect(userID.value).toBe('98137e29-ddb8-420d-bdcb-d4fe9ec6b5ce')
+    expect(userID).toBe('98137e29-ddb8-420d-bdcb-d4fe9ec6b5ce')
 
     //проверка userName
-    const userName = await profilePage.getUserName()
+    userName = await cookiesUtil.getCookieValue('userName')
     expect(userName).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
     expect(userName).toBe('Misha')
 
     //проверка expires
-    const expires = await profilePage.getExpires()
+    const expires = await cookiesUtil.getCookieValue('expires')
     expect(expires).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
 
     //проверка token
-    token = await profilePage.getToken()
+    token = await cookiesUtil.getCookieValue('token')
     expect(token).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
   })
 
@@ -70,7 +73,7 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Модификация ответа', async () => {
-    cheatPages = supportUtil.cheatPages
+    cheatPages = routeUtil.cheatPages
     routeUtil.pageRoute()
   })
 
@@ -87,7 +90,7 @@ test('Task_5', async ({ page }) => {
 
     //выполнить API запрос (await request.get(…))
     const getUserInfo = await axios.get(
-      `https://demoqa.com/Account/v1/User/${userID.value}`,
+      `https://demoqa.com/Account/v1/User/${userID}`,
       {
         headers: {
           Authorization: `Bearer ${token}`
@@ -100,6 +103,6 @@ test('Task_5', async ({ page }) => {
     expect(infoBody.username).toBe('Misha') // проверяем имя в ответе
     expect(infoBody.books).toHaveLength(0) // проверяем массив книг в ответе
 
-    console.log(infoBody)
+    console.log("значение айди:", userID)
   })
 })
