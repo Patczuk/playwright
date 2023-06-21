@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test'
+import { Page } from '@playwright/test'
 
 export class ProfilePage {
   readonly page: Page
@@ -10,11 +10,4 @@ export class ProfilePage {
    async waitForLogoutBtn() {
     await this.page.waitForSelector('#submit')
    }
-  
-  
-    async blockImages() {
-    this.page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) =>
-      route.abort()
-    )
-   }
- }
+}

@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test'
 import { login } from '../config/credentials.json'
-import axios from 'axios'
 import { LoginPage } from '../pages/loginPage'
 import { ProfilePage } from '../pages/profilePage'
 import { BookStorePage } from '../pages/bookStorePage'
 import {SupportUtil} from '../utils/supportUtil'
 import {RouteUtil} from '../utils/routeUtil'
 import {CookiesUtil} from '../utils/cookiesUtil'
+import {ApiUtil} from '../utils/apiUtil'
 
 test('Task_5', async ({ page }) => {
   const loginPage = new LoginPage(page)
@@ -15,12 +15,13 @@ test('Task_5', async ({ page }) => {
   const supportUtil = new SupportUtil(page)
   const routeUtil = new RouteUtil(page)
   const cookiesUtil = new CookiesUtil(page)
+  const apiUtil = new ApiUtil(page)
   let response
   let userID
   let userName
   let token
   let responseBody
-  let cheatPages //переменная в которую будем сохранять случайное число страниц
+  const cheatPages = routeUtil.cheatPages //переменная в которую будем сохранять случайное число страниц
   
   await test.step('Log in', async () => {
     await loginPage.goTo()
@@ -29,9 +30,6 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Cookies', async () => {
-    // const cookies = await profilePage.getCookies() // get all cookies
-    // expect(cookies.length).toBeGreaterThan(0)
-
     //проверка userID
     userID = await cookiesUtil.getCookieValue('userID')
     expect(userID).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
@@ -52,11 +50,11 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Block image loading', async () => {
-    profilePage.blockImages()
+    routeUtil.blockImages()
   })
 
   await test.step('Создание ожидания для перехвата GET запроса', async () => {
-    [response] = await routeUtil.blockImages()
+    [response] = await routeUtil.waitResponse()
   })
 
   await test.step('Делаем скриншот страницы', async () => {
@@ -73,36 +71,24 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Модификация ответа', async () => {
-    cheatPages = routeUtil.cheatPages
     routeUtil.pageRoute()
   })
 
   await test.step('Кликаем по рандомной книге', async () => {
-   await bookstorePage.randomBookClick() //кликаем по рандомной книге
+    const randomBookElement = await bookstorePage.getRandomBook() //получаем рандомную книгу
+    await randomBookElement.click()// кликаем по рандомной книге
   })
-
+  
   await test.step('Проверки ответов', async () => {
-    //убедиться, что на UI отображается именно то число страниц, которое указано ранее
-    const pagesCount = bookstorePage.pagesCount // значение количества страниц, видимых через UI
-
     //проверяем, что случайное число страниц на UI равно случайно заданному числу страниц
-    await expect(pagesCount).toHaveText(cheatPages)
+   await expect(bookstorePage.pagesCount).toHaveText(cheatPages)
 
     //выполнить API запрос (await request.get(…))
-    const getUserInfo = await axios.get(
-      `https://demoqa.com/Account/v1/User/${userID}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    )
+    const userInfo = await apiUtil.getUserInfo(userID,token) // получаем тело ответа и сохраняем в переменную
 
-    const infoBody = getUserInfo.data // парсим тело ответа и сохраняем в переменную
+    expect(userInfo.username).toBe('Misha') // проверяем имя в ответе
+    expect(userInfo.books).toHaveLength(0) // проверяем массив книг в ответе
 
-    expect(infoBody.username).toBe('Misha') // проверяем имя в ответе
-    expect(infoBody.books).toHaveLength(0) // проверяем массив книг в ответе
-
-    console.log("значение айди:", userID)
+    console.log(userInfo)
   })
 })

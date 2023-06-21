@@ -1,21 +1,24 @@
 import { Locator, Page } from '@playwright/test'
+import {SupportUtil} from './supportUtil'
 
 export class RouteUtil {
+  
   readonly page: Page
   cheatPages: string
   pageRouteUrl: string
   bookStoreUrl: string
   response: any[]
   readonly bookStoreBtn: Locator
+  supportUtil: SupportUtil
 
   constructor(page: Page) {
     this.page = page;
-    this.cheatPages = (Math.floor(Math.random() * 999) + 1).toString()
+    this.supportUtil = new SupportUtil(page)
+    this.cheatPages = this.supportUtil.cheatPages
     this.pageRouteUrl = 'https://demoqa.com/BookStore/v1/Book?ISBN=*'
     this.bookStoreUrl = 'https://demoqa.com/BookStore/v1/Books'
     this.response = []
     this.bookStoreBtn = page.locator('//span[text()="Book Store"]')
-    
   }
 
   async pageRoute() {
@@ -39,7 +42,7 @@ export class RouteUtil {
     )
    }
 
-   async blockImages() {
+  async waitResponse() {
     this.response = await Promise.all([
       this.page.waitForResponse(
         (resp) =>
@@ -49,5 +52,11 @@ export class RouteUtil {
      this.bookStoreBtn.click() //в меню слева кликнуть Book Store
     ])
     return this.response
+   }
+
+   async blockImages() {
+    this.page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) =>
+      route.abort()
+    )
    }
 }

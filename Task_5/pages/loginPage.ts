@@ -11,7 +11,6 @@ export class LoginPage {
     this.userName = page.locator('#userName')
     this.password = page.locator('#password')
     this.loginBtn = page.locator('#login')
-
   }
 
   async goTo() {
@@ -23,5 +22,4 @@ export class LoginPage {
     await this.password.fill(password)
     await this.loginBtn.click()
   }
-
 }
