@@ -22,7 +22,7 @@ export class BookStorePage {
 
   async getRandomBook() {
     this.books = await this.page.$$('.action-buttons') // получаем все книги со страницы
-    this.randomIndex = Math.floor( this.randomNumber*this.books.length)
+    this.randomIndex = Math.floor(this.randomNumber*this.books.length)
     return this.books[this.randomIndex]
    }       
  }

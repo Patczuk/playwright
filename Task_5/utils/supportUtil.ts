@@ -9,8 +9,6 @@ export class SupportUtil {
   constructor(page: Page) {
     this.page = page
     this.randomNumber = Math.random()
-    // this.randomNumberInDiapazon = Math.floor(Math.random() * 999) + 1
-    // this.cheatPages = this.randomNumberInDiapazon.toString()
   }
 
   async takeScreenshot(pathToFile) {

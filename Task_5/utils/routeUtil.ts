@@ -1,5 +1,4 @@
 import { Locator, Page } from '@playwright/test'
-import {SupportUtil} from './supportUtil'
 import {BookStorePage} from '../pages/bookStorePage'
 
 export class RouteUtil {
@@ -9,15 +8,12 @@ export class RouteUtil {
   pageRouteUrl: string
   bookStoreUrl: string
   response: any[]
-  // supportUtil: SupportUtil
   bookStorePage: BookStorePage
   bookStoreBtn: Locator
 
   constructor(page: Page) {
     this.page = page;
-    // this.supportUtil = new SupportUtil(page)
     this.bookStorePage = new BookStorePage(page)
-    // this.cheatPages = this.supportUtil.cheatPages
     this.pageRouteUrl = 'https://demoqa.com/BookStore/v1/Book?ISBN=*'
     this.bookStoreUrl = 'https://demoqa.com/BookStore/v1/Books'
     this.response = []
