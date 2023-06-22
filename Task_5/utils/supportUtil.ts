@@ -1,18 +1,23 @@
 import { Page } from '@playwright/test'
-import path from 'path'
 
 export class SupportUtil {
   readonly page: Page
   cheatPages: string
   randomNumberInDiapazon: number
+  randomNumber: number
 
   constructor(page: Page) {
     this.page = page
-    this.randomNumberInDiapazon = Math.floor(Math.random() * 999) + 1
-    this.cheatPages = this.randomNumberInDiapazon.toString()
+    this.randomNumber = Math.random()
+    // this.randomNumberInDiapazon = Math.floor(Math.random() * 999) + 1
+    // this.cheatPages = this.randomNumberInDiapazon.toString()
   }
 
-  async takeScreenshot() {
-    await this.page.screenshot({ path: path.join(__dirname, '..', 'screenshots', 'bookstore.png') })
-   }
+  async takeScreenshot(pathToFile) {
+    await this.page.screenshot({ path: pathToFile })
+  }
+
+  async getRandomNumberInRange(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
 }

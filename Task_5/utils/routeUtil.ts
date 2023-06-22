@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test'
 import {SupportUtil} from './supportUtil'
+import {BookStorePage} from '../pages/bookStorePage'
 
 export class RouteUtil {
   
@@ -8,20 +9,22 @@ export class RouteUtil {
   pageRouteUrl: string
   bookStoreUrl: string
   response: any[]
-  readonly bookStoreBtn: Locator
-  supportUtil: SupportUtil
+  // supportUtil: SupportUtil
+  bookStorePage: BookStorePage
+  bookStoreBtn: Locator
 
   constructor(page: Page) {
     this.page = page;
-    this.supportUtil = new SupportUtil(page)
-    this.cheatPages = this.supportUtil.cheatPages
+    // this.supportUtil = new SupportUtil(page)
+    this.bookStorePage = new BookStorePage(page)
+    // this.cheatPages = this.supportUtil.cheatPages
     this.pageRouteUrl = 'https://demoqa.com/BookStore/v1/Book?ISBN=*'
     this.bookStoreUrl = 'https://demoqa.com/BookStore/v1/Books'
     this.response = []
-    this.bookStoreBtn = page.locator('//span[text()="Book Store"]')
+    this.bookStoreBtn = this.bookStorePage.bookStoreBtn
   }
 
-  async pageRoute() {
+  async pageRoute(cheatPages) {
     await this.page.route(
       this.pageRouteUrl,
       async (route) => {
@@ -29,7 +32,7 @@ export class RouteUtil {
         let body = await response.text()
         const bookBody = JSON.parse(body)
   
-        body = body.replace(bookBody.pages, this.cheatPages) //подменяем кол-во страниц на случайное число
+        body = body.replace(bookBody.pages, cheatPages) //подменяем кол-во страниц на случайное число
   
         route.fulfill({
           response,

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import path from 'path'
 import { login } from '../config/credentials.json'
 import { LoginPage } from '../pages/loginPage'
 import { ProfilePage } from '../pages/profilePage'
@@ -21,7 +22,8 @@ test('Task_5', async ({ page }) => {
   let userName
   let token
   let responseBody
-  const cheatPages = routeUtil.cheatPages //переменная в которую будем сохранять случайное число страниц
+  const cheatPages = (await supportUtil.getRandomNumberInRange(1, 1000)).toString()
+  const pathToScreenshotFile = path.join(__dirname, '..', 'screenshots', 'bookstore.png')
   
   await test.step('Log in', async () => {
     await loginPage.goTo()
@@ -59,7 +61,7 @@ test('Task_5', async ({ page }) => {
 
   await test.step('Делаем скриншот страницы', async () => {
     await page.waitForLoadState()
-    await supportUtil.takeScreenshot()
+    await supportUtil.takeScreenshot(pathToScreenshotFile)
   })
 
   await test.step('Проверка запросов', async () => {
@@ -71,7 +73,7 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Модификация ответа', async () => {
-    routeUtil.pageRoute()
+    routeUtil.pageRoute(cheatPages)
   })
 
   await test.step('Кликаем по рандомной книге', async () => {
