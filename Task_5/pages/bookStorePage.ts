@@ -9,10 +9,14 @@ export class BookStorePage {
   randomIndex: number
   randomNumber: number
   supportUtil: SupportUtil
+  pageRouteUrl: string
+  bookStoreUrl: string
    
   constructor(page: Page) {
     this.page = page
     this.bookStoreBtn = page.locator('//span[text()="Book Store"]')
+    this.pageRouteUrl = 'https://demoqa.com/BookStore/v1/Book?ISBN=*'
+    this.bookStoreUrl = 'https://demoqa.com/BookStore/v1/Books'
     this.supportUtil = new SupportUtil(page)
     this.randomNumber = this.supportUtil.randomNumber
     this.books = []
