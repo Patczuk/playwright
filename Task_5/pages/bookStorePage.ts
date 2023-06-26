@@ -8,7 +8,6 @@ export class BookStorePage {
   books: any[]
   randomIndex: number
   randomNumber: number
-  supportUtil: SupportUtil
   pageRouteUrl: string
   bookStoreUrl: string
    
@@ -17,8 +16,6 @@ export class BookStorePage {
     this.bookStoreBtn = page.locator('//span[text()="Book Store"]')
     this.pageRouteUrl = 'https://demoqa.com/BookStore/v1/Book?ISBN=*'
     this.bookStoreUrl = 'https://demoqa.com/BookStore/v1/Books'
-    this.supportUtil = new SupportUtil(page)
-    this.randomNumber = this.supportUtil.randomNumber
     this.books = []
     this.pagesCount = this.page.locator(
       "//div[@id='pages-wrapper']//label[@id='userName-value']")
@@ -26,7 +23,7 @@ export class BookStorePage {
 
   async getRandomBook() {
     this.books = await this.page.$$('.action-buttons') // получаем все книги со страницы
-    this.randomIndex = Math.floor(this.randomNumber*this.books.length)
+    this.randomIndex = await SupportUtil.GetRandomNumberInRange(0,7)
     return this.books[this.randomIndex]
    }       
  }

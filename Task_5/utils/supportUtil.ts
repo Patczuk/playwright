@@ -6,7 +6,6 @@ export class SupportUtil {
 
   constructor(page: Page) {
     this.page = page
-    this.randomNumber = Math.random()
   }
 
   static async TakeScreenshot(page, pathToFile) {
