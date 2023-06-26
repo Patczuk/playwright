@@ -18,7 +18,7 @@ test('Task_5', async ({ page }) => {
   let userName
   let token
   let responseBody
-  const cheatPages = (await SupportUtil.getRandomNumberInRange(1, 1000)).toString()
+  const cheatPages = (await SupportUtil.GetRandomNumberInRange(1, 1000)).toString()
   const pathToScreenshotFile = path.join(__dirname, '..', 'screenshots', 'bookstore.png')
   
   await test.step('Log in', async () => {
@@ -29,35 +29,35 @@ test('Task_5', async ({ page }) => {
 
   await test.step('Cookies', async () => {
     //проверка userID
-    userID = await CookiesUtil.getCookieValue(page, 'userID')
+    userID = await CookiesUtil.GetCookieValue(page, 'userID')
     expect(userID).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
     expect(userID).toBe('98137e29-ddb8-420d-bdcb-d4fe9ec6b5ce')
 
     //проверка userName
-    userName = await CookiesUtil.getCookieValue(page, 'userName')
+    userName = await CookiesUtil.GetCookieValue(page, 'userName')
     expect(userName).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
     expect(userName).toBe('Misha')
 
     //проверка expires
-    const expires = await CookiesUtil.getCookieValue(page,'expires')
+    const expires = await CookiesUtil.GetCookieValue(page,'expires')
     expect(expires).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
 
     //проверка token
-    token = await CookiesUtil.getCookieValue(page,'token')
+    token = await CookiesUtil.GetCookieValue(page,'token')
     expect(token).toBeTruthy() // Проверяем, что значение не является пустым или не определенным
   })
 
   await test.step('Block image loading', async () => {
-    RouteUtil.blockImages(page)
+    RouteUtil.BlockImages(page)
   })
 
   await test.step('Создание ожидания для перехвата GET запроса', async () => {
-    [response] = await RouteUtil.waitResponse(response, page, bookstorePage.bookStoreUrl, bookstorePage.bookStoreBtn)
+    [response] = await RouteUtil.WaitResponse(response, page, bookstorePage.bookStoreUrl, bookstorePage.bookStoreBtn)
   })
 
   await test.step('Делаем скриншот страницы', async () => {
     await page.waitForLoadState()
-    await SupportUtil.takeScreenshot(page, pathToScreenshotFile)
+    await SupportUtil.TakeScreenshot(page, pathToScreenshotFile)
   })
 
   await test.step('Проверка запросов', async () => {
@@ -69,7 +69,7 @@ test('Task_5', async ({ page }) => {
   })
 
   await test.step('Модификация ответа', async () => {
-    RouteUtil.pageRoute(page,bookstorePage.pageRouteUrl,cheatPages)
+    RouteUtil.PageRoute(page,bookstorePage.pageRouteUrl,cheatPages)
   })
 
   await test.step('Кликаем по рандомной книге', async () => {
@@ -82,7 +82,7 @@ test('Task_5', async ({ page }) => {
    await expect(bookstorePage.pagesCount).toHaveText(cheatPages)
 
     //выполнить API запрос (await request.get(…))
-    const userInfo = await ApiUtil.getUserInfo(userID,token) // получаем тело ответа и сохраняем в переменную
+    const userInfo = await ApiUtil.GetUserInfo(userID,token) // получаем тело ответа и сохраняем в переменную
 
     expect(userInfo.username).toBe('Misha') // проверяем имя в ответе
     expect(userInfo.books).toHaveLength(0) // проверяем массив книг в ответе

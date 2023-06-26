@@ -1,6 +1,6 @@
 export class RouteUtil {
   
-  static async pageRoute(page, pageRouteUrl, cheatPages) {
+  static async PageRoute(page, pageRouteUrl, cheatPages) {
     await page.route(
       pageRouteUrl,
       async (route) => {
@@ -21,7 +21,7 @@ export class RouteUtil {
     )
    }
 
-  static async waitResponse(response, page, bookStoreUrl, bookStoreBtn) {
+  static async WaitResponse(response, page, bookStoreUrl, bookStoreBtn) {
     response = await Promise.all([
       page.waitForResponse(
         (resp) =>
@@ -33,7 +33,7 @@ export class RouteUtil {
     return response
    }
 
-   static async blockImages(page) {
+   static async BlockImages(page) {
     page.route('**/*.{png,jpg,jpeg,webp,gif,svg}', (route) =>
       route.abort()
     )

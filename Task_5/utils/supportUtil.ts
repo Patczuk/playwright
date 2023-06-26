@@ -9,11 +9,11 @@ export class SupportUtil {
     this.randomNumber = Math.random()
   }
 
-  static async takeScreenshot(page, pathToFile) {
+  static async TakeScreenshot(page, pathToFile) {
     await page.screenshot({ path: pathToFile })
   }
 
-  static async getRandomNumberInRange(min, max) {
+  static async GetRandomNumberInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
 }
