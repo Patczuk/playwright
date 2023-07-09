@@ -1,0 +1,19 @@
+{
+  "name": "task_6",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./",
+    "lint-fix": "npx eslint . --ext .js,.jsx,.ts,.tsx,.json --fix"
+  },
+  "keywords": [],
+  "author": "Misha",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.35.1",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "eslint": "^8.44.0"
+  }
+}
