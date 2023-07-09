@@ -13,8 +13,9 @@ export class LandingPage {
     await this.page.goto('https://store.steampowered.com/')
   }
 
-  async selectCategory(categoryName) {
-    await this.page.hover(this.categories)
-    await categoryName.click()
+  async clickCategory(categoryName) {
+    await this.categories.hover()
+    const categoryLink = await this.page.waitForSelector(`a[href*="${categoryName}"]`)
+    await categoryLink.click()
   }
 }
