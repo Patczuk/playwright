@@ -6,7 +6,7 @@ export class LandingPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.categories = page.locator("(//a[@class='pulldown_desktop'])[3]")
+    this.categories = page.locator('a.pulldown_desktop:text("Categories")')
   }
   
   async goTo() {
@@ -15,7 +15,7 @@ export class LandingPage {
 
   async clickCategory(categoryName) {
     await this.categories.hover()
-    const categoryLink = await this.page.waitForSelector(`a[href*="${categoryName}"]`)
+    const categoryLink = await this.page.waitForSelector(`a.popup_menu_item:text("${categoryName}")`)
     await categoryLink.click()
   }
 }
