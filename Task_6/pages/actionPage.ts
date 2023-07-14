@@ -8,6 +8,4 @@ export class ActionPage {
     this.page = page;
     this.newAndTrending = page.locator('//div[text()="New & Trending"]')
   }
-  
- 
 }
