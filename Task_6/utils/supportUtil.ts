@@ -9,7 +9,7 @@ export class SupportUtil {
 
   static async Scroll(page) {
     await page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight / 2);
-    });
+      window.scrollTo(0, document.body.scrollHeight*0.65)
+    })
   }
 }
