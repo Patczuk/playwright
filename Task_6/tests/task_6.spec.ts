@@ -4,7 +4,8 @@ import { ActionPage } from '../pages/actionPage'
 import {SupportUtil} from '../utils/supportUtil'
 import { NewAndTrendingPage } from '../pages/newAndTrending'
 import { GamePage } from '../pages/gamePage'
-import { InstallSteamPage } from '../pages/installSteamPage'
+import path from 'path'
+
 
 test('Task_6', async ({page}) => {
   await page.pause()
@@ -12,7 +13,9 @@ test('Task_6', async ({page}) => {
   const actionPage = new ActionPage(page)
   const newAndTrending = new NewAndTrendingPage(page)
   const gamePage = new GamePage(page)
-  const installSteamPage = new InstallSteamPage(page)
+  const supportUtil = new SupportUtil(page)
+  let downloadResult
+
 
   await test.step('Visit Landing page', async () => {
     await landingPage.goTo()
@@ -23,7 +26,7 @@ test('Task_6', async ({page}) => {
   })
 
   await test.step('Game selection based on given conditions', async () => {
-    await SupportUtil.Scroll(page)
+    await supportUtil.scroll(page)
     await actionPage.newAndTrending.click()
     await newAndTrending.gameSelection()
     await actionPage.newAndTrending.isVisible()
@@ -38,7 +41,13 @@ test('Task_6', async ({page}) => {
   })
   
   await test.step('Downloading the setup file', async () => {
-    await installSteamPage.downloadSteam()
+    downloadResult = await supportUtil.downloadSteam()
+  })
+
+  await test.step('Renaming the downloaded file', async () => {
+    const timeStamp = await supportUtil.generateTimeStamp()
+    const renamedFile = await supportUtil.renameFileWithTimeStamp(downloadResult.path, downloadResult.filename,timeStamp)
+    console.log('Renamed file name:', renamedFile)
   })
 
 })
