@@ -4,7 +4,7 @@ import path from 'path'
 import fs from 'fs'
 
 export class SupportUtil {
-  readonly page: Page
+    readonly page: Page
   readonly installSteamPage: InstallSteamPage
   readonly installSteamBtn: Locator
 

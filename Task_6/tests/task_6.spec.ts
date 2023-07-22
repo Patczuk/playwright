@@ -4,8 +4,6 @@ import { ActionPage } from '../pages/actionPage'
 import {SupportUtil} from '../utils/supportUtil'
 import { NewAndTrendingPage } from '../pages/newAndTrending'
 import { GamePage } from '../pages/gamePage'
-import path from 'path'
-
 
 test('Task_6', async ({page}) => {
   await page.pause()
