@@ -27,7 +27,6 @@ test('Task_6', async ({page}) => {
     await supportUtil.scroll(page)
     await actionPage.newAndTrending.click()
     await newAndTrending.gameSelection()
-    await actionPage.newAndTrending.isVisible()
   })
  
   await test.step('Checking game price and discount', async () => {

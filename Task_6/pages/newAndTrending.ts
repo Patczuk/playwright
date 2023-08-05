@@ -18,65 +18,63 @@ export class NewAndTrendingPage {
     this.fillAge = this.ageCheckPage.fillAge
   }
 
-  async clickNearestParentUp(givenElement, levels) {
-  const element = givenElement
-
-  let parentElement = element;
-  for (let i = 0; i < levels; i++) {
-    // Найти родительский элемент (на один уровень выше) с помощью evaluateHandle
-    const newParentElement = await parentElement.evaluateHandle((el) => el.parentElement)
-    if (!newParentElement) {
-      console.error(`Родительский элемент не найден на уровне ${i + 1}.`)
-      return;
-    }
-    parentElement = newParentElement
-  }
-  const siblingElements = await parentElement.evaluateHandle((el) => {
-    return Array.from(el.parentElement.children)
-  });
-
-  // Если смежный элемент всего один, выполнить клик по нему
-  if (siblingElements.length === 1) {
-    await siblingElements[0].click()
-    return
-  }
-  }
-
   async gameSelection() {
     const discountElement = await this.discount
     if (discountElement) {
-      // Если элемент скидки найден
-  const maxDiscountElement = await this.page.evaluateHandle(() => {
-    const elements = Array.from(document.querySelectorAll('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]'))
-    return elements.reduce((maxElement, currentElement) => {
-      const currentValue = parseFloat(currentElement.textContent?.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
-      const maxValue = parseFloat(maxElement.textContent?.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
-      return currentValue > maxValue ? currentElement : maxElement
-    })
-  })
-  await this.clickNearestParentUp(maxDiscountElement,4)
+      
+    // Если элемент скидки найден
+    const maxDiscountElement = await this.page.evaluate(() => {
+      const elements = Array.from(document.querySelectorAll('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]'))
+      
+      // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
+      let maxDiscountValue = Number.NEGATIVE_INFINITY
+      let maxDiscountElement
+      
+      elements.forEach((currentElement) => {
+        const currentValue = parseFloat(currentElement.textContent?.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
+        if (currentValue > maxDiscountValue) {
+          maxDiscountValue = currentValue
+          maxDiscountElement = currentElement.textContent
+        }
+      })
+        return maxDiscountElement
+      })  
+      
+    // кликаем по игре с максимальной скидкой
+    await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxDiscountElement}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
+  
 } else {
   // Если элемент скидки не найден
   await this.price
-  const maxPriceElement = await this.page.evaluateHandle(() => {
+  
+  const maxPriceElement = await this.page.evaluate(() => {
     const elements = Array.from(document.querySelectorAll('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSalePriceBox"]'))
-    return elements.reduce((maxElement, currentElement) => {
+    
+    // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
+    let maxPriceValue = Number.NEGATIVE_INFINITY
+    let maxPriceElement
+    
+    elements.forEach((currentElement) => {
       const currentValue = parseFloat(currentElement.textContent?.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
-      const maxValue = parseFloat(maxElement.textContent?.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
-      return currentValue > maxValue ? currentElement : maxElement
+      if (currentValue > maxPriceValue) {
+        maxPriceValue = currentValue
+        maxPriceElement = currentElement.textContent
+      }
     })
-  })
-  await this.clickNearestParentUp(maxPriceElement,4)
-    }
-    // Проверяем видимость элемента this.ageGate
+      return maxPriceElement
+    })  
+  
+  // кликаем по игре с максимальной ценой
+  await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxPriceElement}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
+  }
+  
+  // Проверяем видимость элемента this.ageGate
   const ageGateElement = await this.ageGate
-  const isAgeGateVisible = await ageGateElement.isVisible();
+  const isAgeGateVisible = await ageGateElement.isVisible()
 
   if (isAgeGateVisible) {
     // Вызываем функцию fillAge(), если элемент this.ageGate виден
-    await this.fillAge();
+    await this.fillAge()
   }
-  }
-
-
+}
 }
