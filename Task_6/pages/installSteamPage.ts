@@ -1,12 +1,11 @@
-import { Locator, Page } from '@playwright/test'
+import { Page } from '@playwright/test'
 
 export class InstallSteamPage {
   readonly page: Page
-  readonly installSteamBtn: Locator
-  readonly pathToSave: string
+  readonly installSteamBtn: string
 
   constructor(page: Page) {
-    this.page = page;
-    this.installSteamBtn = page.locator("(//a[@class='about_install_steam_link'])[1]")
+    this.page = page
+    this.installSteamBtn = "(//a[@class='about_install_steam_link'])[1]"
   }
 }

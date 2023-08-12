@@ -1,11 +1,16 @@
-import { Locator, Page } from '@playwright/test'
+import { Page } from '@playwright/test'
 
 export class GamePage {
   readonly page: Page
-  readonly installSteamBtn: Locator
+  installSteamBtn: string
+  price: string
+  discount: string
+  discountValue: number
 
   constructor(page: Page) {
-    this.page = page;
-    this.installSteamBtn = page.getByText('Install Steam')
+    this.page = page
+    this.installSteamBtn = 'Install Steam'
+    this.price = "div.game_purchase_price"
+    this.discount = "div.discount_pct"
   }
 }

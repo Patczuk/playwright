@@ -1,12 +1,12 @@
-import { Locator, Page } from '@playwright/test'
+import { Page } from '@playwright/test'
 import { InstallSteamPage } from '../pages/installSteamPage'
 import path from 'path'
 import fs from 'fs'
 
 export class SupportUtil {
-    readonly page: Page
+  readonly page: Page
   readonly installSteamPage: InstallSteamPage
-  readonly installSteamBtn: Locator
+  readonly installSteamBtn: string
 
   constructor(page: Page) {
     this.page = page
@@ -14,15 +14,15 @@ export class SupportUtil {
     this.installSteamBtn = this.installSteamPage.installSteamBtn
   }
 
-  async scroll(page) {
-    await page.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight*0.65)
-    })
+  async scroll(page: Page,value: number) {
+    await page.evaluate((scrollValue) => {
+      window.scrollTo(0, document.body.scrollHeight*scrollValue)
+    }, value)
   }
 
-  async downloadSteam() {
-    const downloadPromise = this.page.waitForEvent('download')
-    await this.installSteamBtn.click()
+  async downloadSteam(page: Page) {
+    const downloadPromise = page.waitForEvent('download')
+    await page.locator(this.installSteamBtn).click()
     
     // Wait for the download process to complete
     const download = await downloadPromise
@@ -51,6 +51,11 @@ export class SupportUtil {
     const minutes = String(now.getMinutes()).padStart(2, '0')
     const seconds = String(now.getSeconds()).padStart(2, '0')
     return `${day}${month}${year}_${hours}${minutes}${seconds}`
+  }
+
+  async getNumber (string) {
+    const number = parseFloat(string.replace(/[^0-9,]/g, '').replace(',', '.')) || 0
+    return number
   }
 
   async renameFileWithTimeStamp(originalPath: string, downloadedFileName: string, timeStamp: string) {

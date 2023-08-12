@@ -3,10 +3,12 @@ import { Locator, Page } from '@playwright/test'
 export class LandingPage {
   readonly page: Page
   readonly categories: Locator
+  readonly acceptAllButton: Locator
 
   constructor(page: Page) {
-    this.page = page;
+    this.page = page
     this.categories = page.locator('a.pulldown_desktop:text("Categories")')
+    this.acceptAllButton = page.locator('#acceptAllButton')
   }
   
   async goTo() {
