@@ -15,8 +15,21 @@ export class SupportUtil {
   }
 
   async scroll(page: Page,value: number) {
-    await page.evaluate((scrollValue) => {
-      window.scrollTo(0, document.body.scrollHeight*scrollValue)
+    await page.evaluate(async (scrollValue) => {
+      await new Promise<void>((resolve) => {
+        const distance = document.body.scrollHeight * scrollValue;
+        let currentPosition = 0
+
+        const scrollInterval = setInterval(() => {
+          window.scrollBy(0, 10)
+          currentPosition += 10
+
+          if (currentPosition >= distance) {
+            clearInterval(scrollInterval);
+            resolve()
+          }
+        }, 10)
+      })
     }, value)
   }
 

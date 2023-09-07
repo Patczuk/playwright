@@ -6,7 +6,7 @@ import { NewAndTrendingPage } from '../pages/newAndTrending'
 import { GamePage } from '../pages/gamePage'
 
 test('Task_6', async ({page, context}) => {
-  // await page.pause()
+  await page.pause()
   const landingPage = new LandingPage(page)
   const actionPage = new ActionPage(page)
   const newAndTrending = new NewAndTrendingPage(page)
@@ -15,10 +15,9 @@ test('Task_6', async ({page, context}) => {
   let downloadResult
   let newPage
 
-
   await test.step('Visit Landing page', async () => {
     await landingPage.goTo()
-    await landingPage.acceptAllButton.click()
+    // await landingPage.acceptAllButton.click()
   })
 
   await test.step('Click Action', async () => {
@@ -27,7 +26,8 @@ test('Task_6', async ({page, context}) => {
 
   await test.step('Game selection based on given conditions', async () => {
     await page.waitForLoadState('domcontentloaded')
-    await supportUtil.scroll(page,0.6)
+    // await supportUtil.scroll(page,0.3)
+    await supportUtil.scroll(page,0.5)
     await actionPage.newAndTrending.click()
     const newPagePromise = new Promise((resolve) => context.once('page', resolve))
     await newAndTrending.gameSelection()
@@ -73,6 +73,5 @@ test('Task_6', async ({page, context}) => {
     const renamedFile = await supportUtil.renameFileWithTimeStamp(downloadResult.path, downloadResult.filename,timeStamp)
     console.log('Renamed file name:', renamedFile)
   })
-
 })
 

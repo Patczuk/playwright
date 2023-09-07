@@ -22,10 +22,12 @@ export class NewAndTrendingPage {
 
   async gameSelection() {
     const discountElement = await this.discount
+    let maxDiscountValueText
+    let maxPriceValueText
     if (discountElement) {
       
     // Если элемент скидки найден
-    const maxDiscountValue = await this.page.evaluate(() => {
+    maxDiscountValueText = await this.page.evaluate(() => {
       const elements = Array.from(document.querySelectorAll('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]'))
       
       // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
@@ -39,21 +41,18 @@ export class NewAndTrendingPage {
           maxDiscountElement = currentElement.textContent
         }
       })
-        return maxDiscountElement
+       return maxDiscountElement
       })  
-      
-    // кликаем по игре с максимальной скидкой
-    await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxDiscountValue}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
-    
-    const discountValueText = maxDiscountValue
-    
-    this.discountValue = parseFloat(discountValueText.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
+     
+    await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxDiscountValueText}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
+    //получаем числовое значение максимальной скидки
+    this.discountValue = parseFloat(maxDiscountValueText.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
 
   } else {
   // Если элемент скидки не найден
   await this.price
   
-  const maxPriceValue = await this.page.evaluate(() => {
+  maxPriceValueText = await this.page.evaluate(() => {
     const elements = Array.from(document.querySelectorAll('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSalePriceBox"]'))
     
     // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
@@ -71,11 +70,9 @@ export class NewAndTrendingPage {
     })  
   
   // кликаем по игре с максимальной ценой
-  await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxPriceValue}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
-
-  const priceValueText = maxPriceValue
-    
-  this.priceWithoutDiscount = parseFloat(priceValueText.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
+  await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxPriceValueText}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
+  // получаем числовое значение максимальной цены
+  this.priceWithoutDiscount = await parseFloat(maxPriceValueText.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
   }
   
   // Проверяем если запрос на возраст пользователя
