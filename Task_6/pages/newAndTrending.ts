@@ -13,8 +13,12 @@ export class NewAndTrendingPage {
 
   constructor(page: Page) {
     this.page = page
-    this.discount = page.locator('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]')
-    this.price = page.locator('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSalePriceBox"]')
+    this.discount = page.locator(
+      'div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]',
+    )
+    this.price = page.locator(
+      'div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSalePriceBox"]',
+    )
     this.ageCheckPage = new AgeCheckPage(page)
     this.ageGate = this.ageCheckPage.ageGate
     this.fillAge = this.ageCheckPage.fillAge
@@ -25,13 +29,15 @@ export class NewAndTrendingPage {
     let maxDiscountValueText
     let maxPriceValueText
     if (discountElement) {
-      
-    // Если элемент скидки найден
-    maxDiscountValueText = await this.page.evaluate(() => {
-      const elements = Array.from(document.querySelectorAll('div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]'))
+      // Если элемент скидки найден
+      maxDiscountValueText = await this.page.evaluate(() => {
+        const elements = Array.from(
+          document.querySelectorAll(
+            'div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]',
+          ),
       
       // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
-      let maxDiscountValue = Number.NEGATIVE_INFINITY
+      let maxDiscountValueText = Number.NEGATIVE_INFINITY
       let maxDiscountElement
       //находим максимальную скидку
       elements.forEach((currentElement) => {

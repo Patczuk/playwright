@@ -14,10 +14,10 @@ export class SupportUtil {
     this.installSteamBtn = this.installSteamPage.installSteamBtn
   }
 
-  async scroll(page: Page,value: number) {
+  async scroll(page: Page, value: number) {
     await page.evaluate(async (scrollValue) => {
       await new Promise<void>((resolve) => {
-        const distance = document.body.scrollHeight * scrollValue;
+        const distance = document.body.scrollHeight * scrollValue
         let currentPosition = 0
 
         const scrollInterval = setInterval(() => {
@@ -25,7 +25,7 @@ export class SupportUtil {
           currentPosition += 10
 
           if (currentPosition >= distance) {
-            clearInterval(scrollInterval);
+            clearInterval(scrollInterval)
             resolve()
           }
         }, 10)
@@ -36,22 +36,22 @@ export class SupportUtil {
   async downloadSteam(page: Page) {
     const downloadPromise = page.waitForEvent('download')
     await page.locator(this.installSteamBtn).click()
-    
+
     // Wait for the download process to complete
     const download = await downloadPromise
-        
+
     const originalPath = await download.path()
 
     if (originalPath === null) {
-      console.log('Failed to get the file path.');
+      console.log('Failed to get the file path.')
       return null
     }
 
     const downloadedFileName = path.basename(originalPath)
-    
+
     return {
       path: originalPath,
-      filename: downloadedFileName
+      filename: downloadedFileName,
     }
   }
 
@@ -66,25 +66,20 @@ export class SupportUtil {
     return `${day}${month}${year}_${hours}${minutes}${seconds}`
   }
 
-  async getNumber (string) {
-    const number = parseFloat(string.replace(/[^0-9,]/g, '').replace(',', '.')) || 0
-    return number
+  async getNumber(string) {
+    return parseFloat(string.replace(/[^0-9,]/g, '').replace(',', '.')) || 0
   }
 
-  async renameFileWithTimeStamp(originalPath: string, downloadedFileName: string, timeStamp: string) {
-    return new Promise((resolve, reject) => {
-      const directory = path.dirname(originalPath)
-      const newFileName = `${downloadedFileName}_${timeStamp}`
-      const newPath = path.join(directory, newFileName)
-  
-      // Переименовываем файл
-      fs.rename(originalPath, newPath, (err) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(newPath)
-        }
-      })
-    })
+  async renameFileWithTimeStamp(
+    originalPath: string,
+    downloadedFileName: string,
+    timeStamp: string,
+  ) {
+    const directory = path.dirname(originalPath)
+    const newFileName = `${downloadedFileName}_${timeStamp}`
+    const newPath = path.join(directory, newFileName)
+
+    // Переименовываем файл
+    fs.renameSync(originalPath, newPath)
   }
 }
