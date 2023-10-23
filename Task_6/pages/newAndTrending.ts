@@ -35,24 +35,33 @@ export class NewAndTrendingPage {
           document.querySelectorAll(
             'div[class^="saleitembrowser_SaleItemBrowserContainer"] div[class^="salepreviewwidgets_StoreSaleDiscountBox"]',
           ),
-      
-      // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
-      let maxDiscountValueText = Number.NEGATIVE_INFINITY
-      let maxDiscountElement
-      //находим максимальную скидку
-      elements.forEach((currentElement) => {
-        const currentValue = parseFloat(currentElement.textContent?.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
-        if (currentValue > maxDiscountValue) {
-          maxDiscountValue = currentValue
-          maxDiscountElement = currentElement.textContent
-        }
+        )
+        // Инициализируем переменную значением, гарантированно меньшим любого возможного значения
+        let maxDiscountValue = Number.NEGATIVE_INFINITY
+        let maxDiscountElement
+        //находим максимальную скидку
+        elements.forEach((currentElement) => {
+          const currentValue = parseFloat(
+            currentElement.textContent
+              ?.replace(/[^0-9,]/g, '')
+              .replace(',', '.') || '0',
+          )
+          if (currentValue > maxDiscountValue) {
+            maxDiscountValue = currentValue
+            maxDiscountElement = currentElement.textContent
+          }
+        })
+        return maxDiscountElement
       })
-       return maxDiscountElement
-      })  
-     
-    await this.page.locator(`(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxDiscountValueText}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`).click()
-    //получаем числовое значение максимальной скидки
-    this.discountValue = parseFloat(maxDiscountValueText.replace(/[^0-9,]/g, '').replace(',', '.') || '0')
+
+      await this.page
+        .locator(
+          `(//div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//div[contains(text(), "${maxDiscountValueText}")]//ancestor::div[@class='salepreviewwidgets_StoreSaleWidgetOuterContainer_38DqR Panel Focusable']//img)[1]`,
+        )
+        .click()
+      //получаем числовое значение максимальной скидки
+      this.discountValue = parseFloat(
+        maxDiscountValueText.replace(/[^0-9,]/g, '').replace(',', '.') || '0',)
 
   } else {
   // Если элемент скидки не найден
